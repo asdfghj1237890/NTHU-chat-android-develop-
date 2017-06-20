@@ -98,11 +98,11 @@ public class undoam extends Fragment {
                 do {
                     Item item = new Item();
                     item.setCourse_head(cursor.getString(1));
-                    item.setHw_head(cursor.getString(2));
-                    item.setHw_content(cursor.getString(4));
-                    item.setHw_deadline(cursor.getString(3));
+                    item.setHw_head(cursor.getString(3));
+                    item.setHw_content(cursor.getString(7));
+                    item.setHw_deadline(cursor.getString(5));
                     try{
-                        Date parsed_date = system_date.parse(cursor.getString(3));
+                        Date parsed_date = system_date.parse(cursor.getString(5));
                         Date now = new Date(System.currentTimeMillis());
                         //Toast.makeText(getActivity(),cursor.getString(2)+parsed_date.compareTo(now), Toast.LENGTH_LONG).show();
                         if(parsed_date.compareTo(now) == 1) arrayList.add(item);

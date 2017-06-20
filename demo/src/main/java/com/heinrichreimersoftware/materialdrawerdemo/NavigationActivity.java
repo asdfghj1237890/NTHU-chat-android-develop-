@@ -237,9 +237,9 @@ public class NavigationActivity extends AppCompatActivity
             idText.setText(title[0]);
         }
     }
-    public void findHW(String course_url,final int seq_order){
+    public void findHW(final String course_id,final int seq_order){
+        String course_url = "http://lms.nthu.edu.tw/course.php?courseID="+course_id+"&f=hwlist";
         client.get(course_url, new AsyncHttpResponseHandler() {
-
             @Override
             public void onFailure(int statusCode, Header[] headers,
                                   byte[] responseBody, Throwable error) {
@@ -259,18 +259,42 @@ public class NavigationActivity extends AppCompatActivity
                         for (int i = 1; i < hw_elements.size(); i++) {
                             Elements hw_elements_select = hw_elements.get(i).select("td>a");
                             Elements deadline_date = hw_elements.get(i).select("td>span[title]");
-                            String class_title = name_elements.get(0).text();
-                            String hw_title = hw_elements_select.text();
-                            String deadline_text = deadline_date.attr("title");
+                            final String class_title = name_elements.get(0).text();
+                            final String hw_title = hw_elements_select.text();
+                            final String hw_id = hw_elements_select.attr("href").split("hw=")[1];
+                            final String deadline_text = deadline_date.attr("title");
                             //Toast.makeText(NavigationActivity.this, hw_elements.get(i).text(), Toast.LENGTH_LONG).show();
                             //Toast.makeText(NavigationActivity.this, deadline_text, Toast.LENGTH_SHORT).show();
-                            values.put("course_name",class_title );
-                            values.put("hw_name", hw_title);
-                            values.put("deadline_date", deadline_text);
-                            values.put("finish", 0);
-                            values.put("content", "TESTING content");
-                            long id = helper.getWritableDatabase().insert("exp", null, values);
-                            Log.d("ADD", id+"");
+                            client.get("http://lms.nthu.edu.tw/course.php?courseID="+course_id+"&f=hw&hw="+hw_id, new AsyncHttpResponseHandler() {
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers,
+                                                      byte[] responseBody, Throwable error) {
+
+                                }
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, byte[] data) {
+                                    ContentValues values = new ContentValues();
+                                    String json = new String(data);
+                                    document_unbox = Jsoup.parse(json);
+                                    if (document_unbox!=null){
+                                        //Elements elements = document_unbox.select("div.boxBody>div.Ehomework>a[title]");
+                                        Elements hw_page_elements = document_unbox.select("div.infoTable>table>tbody>tr");
+                                        if(hw_page_elements.size() > 0) {
+                                                Element description_table = hw_page_elements.get(6).select("td").get(1);
+                                                String decription = description_table.text();
+                                                values.put("course_name",class_title );
+                                                values.put("course_id",course_id);
+                                                values.put("hw_name", hw_title);
+                                                values.put("hw_id",hw_id);
+                                                values.put("deadline_date", deadline_text);
+                                                values.put("finish", 0);
+                                                values.put("content", decription);
+                                                long id = helper.getWritableDatabase().insert("exp", null, values);
+                                                Log.d("ADD", id+"");
+                                        }
+                                    }
+                                }
+                            });
                         }
                     }
                 }
@@ -434,10 +458,10 @@ public class NavigationActivity extends AppCompatActivity
                         }
                         String src_title = elements.get(i).attr("href");
                         String course_id = src_title.split("/")[2];
-                        String course_hw_list = "http://lms.nthu.edu.tw/course.php?courseID="+course_id+"&f=hwlist";
+
                         String course_doc_list = "http://lms.nthu.edu.tw/course.php?courseID="+course_id+"&f=doclist";
                         final String mixtitle_withoutn = "http://lms.nthu.edu.tw" + src_title;
-                        findHW(course_hw_list,i);
+                        findHW(course_id,i);
                         //finddoc(course_doc_list,i);
                         //Toast.makeText(NavigationActivity.this, course_id, Toast.LENGTH_SHORT).show();
                         menu.add(0, i+2, 0, final_name);

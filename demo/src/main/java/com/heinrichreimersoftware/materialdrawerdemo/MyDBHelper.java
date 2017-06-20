@@ -41,7 +41,9 @@ public class MyDBHelper extends SQLiteOpenHelper{
                 "(_id INTEGER PRIMARY KEY  NOT NULL , " +
                 //"cdate DATETIME NOT NULL , " +
                 "course_name VARCHAR, " +
+                "course_id VARCHAR, " +
                 "hw_name VARCHAR, " +
+                "hw_id VARCHAR, " +
                 //"info VARCHAR, " +
                 "deadline_date VARCHAR, " +
                 "finish INTEGER, "+
