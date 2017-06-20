@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright 2014 Heinrich Reimer
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+    <item name="mdDrawerLayout" type="id" />
+    <item name="mdToolbar" type="id" />
+    <item name="mdFrame" type="id" />
+
+    <item name="mdDrawer" type="id" />
+
+    <item name="mdScrollView" type="id" />
+
+    <item name="mdLayout" type="id" />
+
+    <item name="mdLayoutProfile" type="id" />
+    <item name="mdLayoutProfileContent" type="id" />
+
+    <item name="mdAvatarProfile" type="id" />
+    <item name="mdAvatarProfileSecondary" type="id" />
+    <item name="mdAvatarProfileCount" type="id" />
+
+    <item name="mdProfileBackground" type="id" />
+    <item name="mdProfileBackgroundOverlay" type="id" />
+    <item name="mdProfileTextContainer" type="id" />
+    <item name="mdProfileName" type="id" />
+    <item name="mdProfileDescription" type="id" />
+
+    <item name="mdOpenProfileListContainer" type="id" />
+    <item name="mdOpenProfileListIcon" type="id" />
+
+    <item name="mdProfileList" type="id" />
+
+
+    <item name="mdListContainer" type="id" />
+    <item name="mdList" type="id" />
+
+    <item name="mdFixedShadow" type="id" />
+    <item name="mdFixedDivider" type="id" />
+    <item name="mdFixedListContainer" type="id" />
+    <item name="mdLinearListViewFixed" type="id" />
+
+    <item name="mdRoot" type="id" />
+    <item name="mdImage" type="id" />
+    <item name="mdTextPrimary" type="id" />
+    <item name="mdTextSecondary" type="id" />
+
+    <item name="mdHeaderRoot" type="id" />
+    <item name="mdDivider" type="id" />
+    <item name="mdHeaderTitleRoot" type="id" />
+    <item name="mdHeaderTitle" type="id" />
+</resources>
