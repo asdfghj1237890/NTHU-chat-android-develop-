@@ -41,18 +41,13 @@
 
         <com.heinrichreimersoftware.materialdrawerdemo.RoundedRectProgressBar
             android:id="@+id/bar"
-            android:layout_width="308dp"
+            android:layout_width="335dp"
             android:layout_height="24dp"
+            android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="0dp"
             app:backColor="#E6E6E6"
             app:barColor="#33CC99"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
             app:textColor="#FFFFFF" />
 
         <TextView
