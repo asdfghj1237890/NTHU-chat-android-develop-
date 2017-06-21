@@ -24,8 +24,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintHorizontal_bias="0.0">
 
-            >
-
         <android.support.design.widget.TextInputLayout
                 android:layout_width="297dp"
                 android:layout_height="wrap_content">

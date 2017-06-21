@@ -7,7 +7,7 @@ package com.heinrichreimersoftware.materialdrawerdemo.item;
 public class done_progress {
     int id;
     String course_head;
-
+    String description;
 
     public int getId() {
         return id;
@@ -23,5 +23,8 @@ public class done_progress {
 
     public void setCourse_head(String course_head) {
         this.course_head = course_head;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
