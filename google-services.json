@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "427157864182",
+    "firebase_url": "https://landing-page-c1f6d.firebaseio.com",
+    "project_id": "landing-page-c1f6d",
+    "storage_bucket": "landing-page-c1f6d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427157864182:android:13791d3d80dcb4bb",
+        "android_client_info": {
+          "package_name": "com.ilmsplus.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427157864182-br4m3km9innqmo3rcfleafv2dfs6h8se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATdMg9FXPFwnyLXNfCIYqQxNZa6eExQMI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

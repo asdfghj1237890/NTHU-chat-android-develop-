@@ -39,12 +39,14 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <com.heinrichreimersoftware.materialdrawerdemo.RoundedRectProgressBar
+        <com.ilmsplus.demo.RoundedRectProgressBar
             android:id="@+id/bar"
-            android:layout_width="335dp"
+            android:layout_width="match_parent"
             android:layout_height="24dp"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
             android:layout_marginTop="0dp"
             app:backColor="#E6E6E6"
             app:barColor="#33CC99"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ilmsplus.materialdrawer.DrawerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/mdDrawerLayout"
@@ -30,4 +30,4 @@
 
     </LinearLayout>
 
-</com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout>
+</com.ilmsplus.materialdrawer.DrawerFrameLayout>

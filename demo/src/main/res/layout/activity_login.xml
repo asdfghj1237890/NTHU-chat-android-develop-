@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:weightSum="1"
     android:background="@drawable/background"
-    tools:context="com.heinrichreimersoftware.materialdrawerdemo.LoginActivity">
+    tools:context="com.ilmsplus.demo.LoginActivity">
 
     <!-- Login progress -->
         <LinearLayout
