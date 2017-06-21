@@ -283,6 +283,23 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                         Intent myIntent = new Intent(LoginActivity.this,NavigationActivity.class);
                         LoginActivity.this.startActivity(myIntent);
+
+
+//                        int progress = 0;
+//                        Timer timer = new Timer();
+//                        timer.schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                mSubmitView.doResult(true);
+//                            }
+//                        }, 0, 1000);
+
+//                        new Handler().postDelayed(new Runnable(){
+//                            public void run(){
+//                                mSubmitView.doResult(true);
+//                            }
+//                        }, 3000);
+
                     } else {
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();
