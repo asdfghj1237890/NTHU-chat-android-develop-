@@ -10,8 +10,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.widget.Button;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.heinrichreimersoftware.materialdrawerdemo.FinalAsyncHttpClient;
 import com.heinrichreimersoftware.materialdrawerdemo.R;
+import com.heinrichreimersoftware.materialdrawerdemo.RoundedRectProgressBar;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import org.jsoup.Jsoup;
@@ -25,6 +30,10 @@ public class announce extends Fragment {
     private Document document_unbox;
     private String title;
 
+    private RoundedRectProgressBar bar;
+    private Button btn;
+    private int progress;
+    private Timer timer;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,6 +42,20 @@ public class announce extends Fragment {
         return inflater.inflate(R.layout.ann_layout, container, false);
     }
 
+    private void reset(){
+        progress = 0;
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run(){
+                bar.setProgress(progress);
+                progress++;
+                if(progress > 100){
+                    timer.cancel();
+                }
+            }
+        },0 ,30);
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -48,6 +71,17 @@ public class announce extends Fragment {
         final TextView name = (TextView) getActivity().findViewById(R.id.ann_head);
         final TextView content = (TextView) getActivity().findViewById(R.id.ann_content);
         final TextView description = (TextView) getActivity().findViewById(R.id.ann_description);
+
+        bar = (RoundedRectProgressBar) getActivity().findViewById(R.id.bar);
+        btn = (Button) getActivity().findViewById(R.id.btn_progress);
+        btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                reset();
+            }
+        });
+
+
         header.setText(" 公告");
         header.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_announcement_black_24dp,0,0,0);
         name.setText("TEXT HERE");

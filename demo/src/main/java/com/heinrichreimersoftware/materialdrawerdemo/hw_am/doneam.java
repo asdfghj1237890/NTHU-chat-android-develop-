@@ -10,19 +10,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
+
 import com.heinrichreimersoftware.materialdrawerdemo.MyAdapter;
+import com.heinrichreimersoftware.materialdrawerdemo.done_Adapter;
 import com.heinrichreimersoftware.materialdrawerdemo.MyDBHelper;
 import com.heinrichreimersoftware.materialdrawerdemo.R;
 import com.heinrichreimersoftware.materialdrawerdemo.item.Item;
+import com.heinrichreimersoftware.materialdrawerdemo.item.done_progress;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,22 +37,14 @@ import java.util.List;
 public class doneam extends Fragment {
     private RecyclerView mList;
     private MyDBHelper databaseHelper;
-    private ArrayList<Item> arrayList = new ArrayList<Item>();
+    private ArrayList<done_progress> arrayList_new = new ArrayList<done_progress>();
     private Cursor cursor;
-    private MyAdapter adapter;
+    private done_Adapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,@Nullable Bundle savedInstanceState) {
-        final View doneView = inflater.inflate(R.layout.undoam, container, false);
-        /*ArrayList<String> myHeadset = new ArrayList<>();
-        ArrayList<String> myDateset = new ArrayList<>();
-        for(int i = 0; i < 4; i++){
-            myHeadset.add(i + "");
-        }
-        for(int i = 0; i < 4; i++){
-            myDateset.add("期限﹕"+i);
-        }*/
+        final View doneView = inflater.inflate(R.layout.doneam, container, false);
 
         RecyclerView mList = (RecyclerView) doneView.findViewById(R.id.list_view);
         swipeRefreshLayout = (SwipeRefreshLayout) doneView.findViewById(R.id.refresh);
@@ -56,7 +53,7 @@ public class doneam extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mList.setLayoutManager(layoutManager);
         //MyAdapter myAdapter = new MyAdapter(myHeadset,myDateset,mList);
-        adapter = new MyAdapter(getActivity(),arrayList,mList);
+        adapter = new done_Adapter(getActivity(),arrayList_new,mList);
         adapter.notifyDataSetChanged();
         //設置刷新監聽
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -70,8 +67,9 @@ public class doneam extends Fragment {
         return doneView;
     }
 
-    public void loadDatabase(View v){
-        arrayList.clear();
+    public void loadDatabase(View v)
+    {
+        arrayList_new.clear();
         SimpleDateFormat system_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //SimpleDateFormat system_time = new SimpleDateFormat("hh:mm");
         //String date = system_date.format(new Date());
@@ -87,34 +85,42 @@ public class doneam extends Fragment {
         try{
             cursor = databaseHelper.QueryData("select * from main.exp");
             if(cursor != null){
-                if(cursor.moveToFirst()){
+                /*if(cursor.moveToFirst()){
                     do {
-                        Item item = new Item();
-                        item.setCourse_head(cursor.getString(1));
-                        item.setHw_head(cursor.getString(3));
-                        item.setHw_content(cursor.getString(7));
-                        item.setHw_deadline(cursor.getString(5));
-                        try{
-                            Date parsed_date = system_date.parse(cursor.getString(5));
-                            Date now = new Date(System.currentTimeMillis());
-                            //Toast.makeText(getActivity(),cursor.getString(2)+parsed_date.compareTo(now), Toast.LENGTH_LONG).show();
-                            if(parsed_date.compareTo(now) == -1) arrayList.add(item);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        done_progress done = new done_progress();
+                        done.setCourse_head(cursor.getString(1));
+                        arrayList_new.add(done);
                     }while (cursor.moveToNext());
+                }*/
+                if(cursor.moveToFirst()) {
+                    String course_title = cursor.getString(1);
+                    while (cursor.isLast() != true) {
+                        if (course_title.equals(cursor.getString(1)) == false) {
+                            Log.d("title", course_title);
+                            Log.d("getString", cursor.getString(1));
+                            Log.d("id", cursor.getPosition()+"");
+                            if(cursor.getPosition() <= 0){
+                                cursor.moveToNext();
+                            }
+                            else {
+                                cursor.moveToPrevious();
+                                Log.d("id", cursor.getPosition() + "");
+                                done_progress done = new done_progress();
+                                done.setCourse_head(cursor.getString(1));
+                                course_title = cursor.getString(1);
+                                arrayList_new.add(done);
+                                cursor.moveToNext();
+                                cursor.moveToNext();
+                            }
+                        }
+                        else{cursor.moveToNext();}
+                    }
                 }
                 //adapter.refreshItem(databaseHelper.getAllHW());
-                if(arrayList.isEmpty()){
-                    //Toast.makeText(getActivity(),"EMPTY", Toast.LENGTH_LONG).show();
-                    Item item = new Item();
-                    item.setCourse_head("UCCU");
-                    item.setHw_head("現在學期才初，努力做功課吧");
-                    item.setHw_deadline("一萬年");
-                    item.setHw_content("ლ(・´ｪ`・ლ)");
-                    arrayList.add(item);
+                if(arrayList_new.isEmpty()){
+                    Toast.makeText(getActivity(),"還沒有功課有完成過", Toast.LENGTH_LONG).show();
                 }else {
-                    adapter = new MyAdapter(getActivity(), arrayList, mList);
+                    adapter = new done_Adapter(getActivity(), arrayList_new, mList);
                     adapter.notifyDataSetChanged();
                     mList.setAdapter(adapter);
                 }

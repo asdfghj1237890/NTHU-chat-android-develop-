@@ -56,7 +56,20 @@
                     android:text="Loading Header"
                     android:textSize="20sp"
                     android:textStyle="bold" />
-
+                <com.heinrichreimersoftware.materialdrawerdemo.RoundedRectProgressBar
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:id="@+id/bar"
+                    android:layout_marginTop="50dp"
+                    app:backColor="#E6E6E6"
+                    app:barColor="#33CC99"
+                    app:textColor="#FFFFFF"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_progress"
+                    android:text="Reset"
+                    android:layout_centerInParent="true"/>
                 <TextView
                     android:id="@+id/ann_content"
                     android:layout_width="match_parent"
