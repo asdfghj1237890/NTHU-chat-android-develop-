@@ -277,21 +277,30 @@ public class NavigationActivity extends AppCompatActivity
                                     String json = new String(data);
                                     document_unbox = Jsoup.parse(json);
                                     if (document_unbox!=null){
-                                        //Elements elements = document_unbox.select("div.boxBody>div.Ehomework>a[title]");
-                                        Elements hw_page_elements = document_unbox.select("div.infoTable>table>tbody>tr");
-                                        if(hw_page_elements.size() > 0) {
-                                                Element description_table = hw_page_elements.get(6).select("td").get(1);
-                                                String decription = description_table.text();
-                                                values.put("course_name",class_title );
-                                                values.put("course_id",course_id);
-                                                values.put("hw_name", hw_title);
-                                                values.put("hw_id",hw_id);
-                                                values.put("deadline_date", deadline_text);
-                                                values.put("finish", 0);
-                                                values.put("content", decription);
-                                                long id = helper.getWritableDatabase().insert("exp", null, values);
-                                                Log.d("ADD", id+"");
-                                        }
+                                        Element hw_page_elements = document_unbox.select("div.infoTable>table>tbody>tr").get(6).select("td").get(1);
+                                        String description = "";
+                                        String description_table = hw_page_elements.html();
+                                        String strRegEx_div = "<[/]?div[^>]*>";
+                                        String strRegEx_span = "<[/]?span[^>]*>";
+                                        String strRegEx_td = "<[/]?td[^>]*>";
+                                        String strRegEx_br = "<[/]?br[^>]*>";
+                                        String strRegEx_table = "<[/]?table[^>]*>";
+                                        String strRegEx_tbody = "<[/]?tbody[^>]*>";
+                                        String strRegEx_tr = "<[/]?tr[^>]*>";
+                                        description = description_table.replaceAll(strRegEx_div,"").replaceAll(strRegEx_span,"").replaceAll(strRegEx_td,"").replaceAll(strRegEx_br,"");
+                                        description = description.replaceAll(strRegEx_table,"").replaceAll(strRegEx_tbody,"").replaceAll(strRegEx_tr,"").replaceAll(strRegEx_br,"");
+                                        description = description.replaceAll("\n","nnn");
+                                        //Toast.makeText(NavigationActivity.this,description, Toast.LENGTH_SHORT).show();
+                                        description = description.replaceAll("nnn+","\n");
+                                        values.put("course_name",class_title );
+                                        values.put("course_id",course_id);
+                                        values.put("hw_name", hw_title);
+                                        values.put("hw_id",hw_id);
+                                        values.put("deadline_date", deadline_text);
+                                        values.put("finish", 0);
+                                        values.put("content", description);
+                                        long id = helper.getWritableDatabase().insert("exp", null, values);
+                                        Log.d("ADD", id+"");
                                     }
                                 }
                             });
