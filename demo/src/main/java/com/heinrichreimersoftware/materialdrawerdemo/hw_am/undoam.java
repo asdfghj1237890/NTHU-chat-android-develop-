@@ -22,6 +22,9 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.widget.Button;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -49,12 +52,14 @@ public class undoam extends Fragment {
     private Cursor cursor;
     private MyAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,@Nullable Bundle savedInstanceState) {
         final View undoView = inflater.inflate(R.layout.undoam, container, false);
         RecyclerView mList = (RecyclerView) undoView.findViewById(R.id.list_view);
         swipeRefreshLayout = (SwipeRefreshLayout) undoView.findViewById(R.id.refresh);
+
         loadDatabase(undoView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -93,41 +98,41 @@ public class undoam extends Fragment {
         }
         try{
             cursor = databaseHelper.QueryData("select * from main.exp");
-        if(cursor != null){
-            if(cursor.moveToFirst()){
-                do {
+            if(cursor != null){
+                if(cursor.moveToFirst()){
+                    do {
+                        Item item = new Item();
+                        item.setCourse_head(cursor.getString(1));
+                        item.setHw_head(cursor.getString(3));
+                        item.setHw_content(cursor.getString(7));
+                        item.setHw_deadline(cursor.getString(5));
+                        try{
+                            Date parsed_date = system_date.parse(cursor.getString(5));
+                            Date now = new Date(System.currentTimeMillis());
+                            //Toast.makeText(getActivity(),cursor.getString(2)+parsed_date.compareTo(now), Toast.LENGTH_LONG).show();
+                            if(parsed_date.compareTo(now) == 1) arrayList.add(item);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }while (cursor.moveToNext());
+                }
+                //adapter.refreshItem(databaseHelper.getAllHW());
+                if(arrayList.isEmpty()){
+                    //Toast.makeText(getActivity(),"EMPTY", Toast.LENGTH_LONG).show();
                     Item item = new Item();
-                    item.setCourse_head(cursor.getString(1));
-                    item.setHw_head(cursor.getString(3));
-                    item.setHw_content(cursor.getString(7));
-                    item.setHw_deadline(cursor.getString(5));
-                    try{
-                        Date parsed_date = system_date.parse(cursor.getString(5));
-                        Date now = new Date(System.currentTimeMillis());
-                        //Toast.makeText(getActivity(),cursor.getString(2)+parsed_date.compareTo(now), Toast.LENGTH_LONG).show();
-                        if(parsed_date.compareTo(now) == 1) arrayList.add(item);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }while (cursor.moveToNext());
-            }
-            //adapter.refreshItem(databaseHelper.getAllHW());
-            if(arrayList.isEmpty()){
-                //Toast.makeText(getActivity(),"EMPTY", Toast.LENGTH_LONG).show();
-                Item item = new Item();
-                item.setCourse_head("UCCU");
-                item.setHw_head("現在沒有功課呀，別看啦");
-                item.setHw_deadline("一萬年");
-                item.setHw_content("ლ(・´ｪ`・ლ)");
-                arrayList.add(item);
-            }else {
-                adapter = new MyAdapter(getActivity(), arrayList, mList);
-                adapter.notifyDataSetChanged();
-                mList.setAdapter(adapter);
-            }
-            //停止刷新
-            swipeRefreshLayout.setRefreshing(false);
-        }}catch (SQLiteException e){
+                    item.setCourse_head("UCCU");
+                    item.setHw_head("等下一年吧");
+                    item.setHw_deadline("一萬年");
+                    item.setHw_content("ლ(・´ｪ`・ლ)");
+                    arrayList.add(item);
+                }else {
+                    adapter = new MyAdapter(getActivity(), arrayList, mList);
+                    adapter.notifyDataSetChanged();
+                    mList.setAdapter(adapter);
+                }
+                //停止刷新
+                swipeRefreshLayout.setRefreshing(false);
+            }}catch (SQLiteException e){
             e.printStackTrace();
         }
 
