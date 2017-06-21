@@ -29,6 +29,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.facebook.stetho.Stetho;
+import com.heinrichreimersoftware.materialdrawerdemo.hw_am.undoam;
 import com.heinrichreimersoftware.materialdrawerdemo.item.Item;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -200,6 +201,7 @@ public class NavigationActivity extends AppCompatActivity
                 break;*/
             case 1314:
                 fragment = new assignment();
+                //Toast.makeText(NavigationActivity.this, itemId+"" , Toast.LENGTH_SHORT).show();
                 break;
             default:
                 String name = coursename.findItem(itemId).toString();
@@ -318,50 +320,6 @@ public class NavigationActivity extends AppCompatActivity
         });
     }
 
-    public void finddoc(String course_url,final int seq_order){
-        client.get(course_url, new AsyncHttpResponseHandler() {
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers,
-                                  byte[] responseBody, Throwable error) {
-
-            }
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] data) {
-                ContentValues values = new ContentValues();
-                String json = new String(data);
-                document_unbox = Jsoup.parse(json);
-                //idhw_head = (TextView)findViewById(R.id.html_head_head);
-                if (document_unbox!=null){
-                    //Elements elements = document_unbox.select("div.boxBody>div.Ehomework>a[title]");
-                    Elements doc_elements = document_unbox.select("div.tableBox>table>tbody>tr");
-                    Elements name_elements = document_unbox.select("div.infoPath>a");
-                    if(doc_elements.size() > 0) {
-                        for (int i = 1; i < doc_elements.size(); i++) {
-                            Elements doc_elements_select = doc_elements.get(i).select("td>a");
-                            //Elements cid_select = doc_elements.get(i).select("td.td");
-                            Elements date = doc_elements.get(i).select("td>span");
-                            String class_title = name_elements.get(0).text();
-                            String doc_title = doc_elements_select.text();
-                            String deadline_text = date.text();
-                            String link_text = doc_elements_select.attr("href");
-                            //Toast.makeText(NavigationActivity.this, hw_elements.get(i).text(), Toast.LENGTH_LONG).show();
-                            //Toast.makeText(NavigationActivity.this, hw_elements_select.text(), Toast.LENGTH_LONG).show();
-                            values.put("link",link_text );
-                            values.put("doc_name", doc_title);
-                            values.put("class_name", class_title);
-                            values.put("date", deadline_text);
-                            //values.put("discuss", );
-                            values.put("content", "TESTING content");
-                            long id = doc_helper.getWritableDatabase().insert("exp", null, values);
-                            Log.d("ADD", id+"");
-                        }
-                    }
-                }
-            }
-        });
-    }
-
     public void analysepropic(Document document){
         profilephoto = (ImageView)findViewById(R.id.imageView);
         if (document!=null){
@@ -385,6 +343,7 @@ public class NavigationActivity extends AppCompatActivity
             }).start();*/
         }
     }
+
     public static Bitmap getBitmapFromURL(String src){
         try{
             URL url = new URL(src);
@@ -400,6 +359,7 @@ public class NavigationActivity extends AppCompatActivity
             return null;
         }
     }
+
     public void analysecourse(Document document,SubMenu menu){
             Elements elements = document.select("div.mnuItem>a");
             String final_name = "";
@@ -448,9 +408,11 @@ public class NavigationActivity extends AppCompatActivity
                         //String src_title = elements.get(i).attr("href");
                         //final String mixtitle = "http://lms.nthu.edu.tw" + src_title + "\n";
                         //writeInfo("course_link", mixtitle);
-                        menu.add(0, i+1, 0, final_name);
+
+                        //menu.add(0, i+1, 0, final_name);
                         //Toast.makeText(NavigationActivity.this, title, Toast.LENGTH_LONG).show();
-                        menu.findItem(i+1).setIcon(R.drawable.ic_find_in_page_black_24dp_1x);
+
+                        //menu.findItem(i+1).setIcon(R.drawable.ic_find_in_page_black_24dp_1x);
                     }
                 }
                 else {
@@ -473,13 +435,14 @@ public class NavigationActivity extends AppCompatActivity
                         findHW(course_id,i);
                         //finddoc(course_doc_list,i);
                         //Toast.makeText(NavigationActivity.this, course_id, Toast.LENGTH_SHORT).show();
-                        menu.add(0, i+2, 0, final_name);
-                        menu.findItem(i+2).setIcon(R.drawable.ic_find_in_page_black_24dp_1x);
+
+                        //menu.add(0, i+2, 0, final_name);
+                        //menu.findItem(i+2).setIcon(R.drawable.ic_find_in_page_black_24dp_1x);
 
                     }
                     mFile0.setReadOnly();
                     //Toast.makeText(NavigationActivity.this, array[0], Toast.LENGTH_SHORT).show();
-                    Toast.makeText(NavigationActivity.this, "已截取課程資料", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(NavigationActivity.this, "已截取課程資料", Toast.LENGTH_SHORT).show();
                     Toast.makeText(NavigationActivity.this, "已截取功課資料", Toast.LENGTH_SHORT).show();
                     //Toast.makeText(NavigationActivity.this, readInfo("course_link"), Toast.LENGTH_SHORT).show();
                 }
