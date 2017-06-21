@@ -14,4 +14,6 @@
     <color name="text_color_primary_3">#FFFFFF</color>
     <color name="text_color_secondary_3">#b3ffffff</color>
     <color name="view_background">#4F5051</color>
+    <color name="background">#455a64</color>
+    <color name="white">#FFFFFF</color>
 </resources>

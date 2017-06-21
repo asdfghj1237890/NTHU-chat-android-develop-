@@ -45,6 +45,8 @@ import java.io.OutputStreamWriter;
 import org.json.JSONObject;
 import java.net.URLEncoder;
 import java.net.HttpURLConnection;
+import java.util.concurrent.RunnableFuture;
+
 import javax.net.ssl.HttpsURLConnection;
 import static android.Manifest.permission.READ_CONTACTS;
 import android.widget.Toast;
@@ -52,6 +54,8 @@ import android.graphics.Typeface;
 import com.loopj.android.http.*;
 import cz.msebera.android.httpclient.*;
 import cz.msebera.android.httpclient.cookie.Cookie;
+import android.os.Handler;
+import com.unstoppable.submitbuttonview.SubmitButton;
 
 /**
  * A login screen that offers login via email/password.
@@ -63,9 +67,11 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mLoginFormView;
-    private VideoView mVideoView;
+    //private VideoView mVideoView;
     private TextView mTextView;
     private final String TAG = "LoginActivity";
+    private SubmitButton mSubmitView;
+    private SubmitButton.OnResultEndListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,16 +87,16 @@ public class LoginActivity extends AppCompatActivity {
         mTextView = (TextView)findViewById(R.id.textView);
         Typeface otfFace_chosence = Typeface.createFromAsset(getAssets(), "fonts/Chosence.otf");
         mTextView.setTypeface(otfFace_chosence);
-        mVideoView = (VideoView) findViewById(R.id.videoView);
-        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.bg);
-        mVideoView.setVideoURI(uri);
-        mVideoView.start();
-        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+        //mVideoView = (VideoView) findViewById(R.id.videoView);
+        //Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.bg);
+        //mVideoView.setVideoURI(uri);
+        //mVideoView.start();
+        /*mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
             @Override
             public void onPrepared(MediaPlayer mediaPlayer){
                 mediaPlayer.setLooping(true);
             }
-        });
+        });*/
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
         mEmailView.setHintTextColor(Color.WHITE);
@@ -107,15 +113,27 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        /*Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
-        });
+        });*/
 
         mLoginFormView = findViewById(R.id.login_form);
+
+        mSubmitView = (SubmitButton) findViewById(R.id.submitbutton);
+        mSubmitView.reset();
+        mSubmitView.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View view){
+                attemptLogin();
+            }
+
+        });
+        mSubmitView.setVisibility(View.VISIBLE);
+        mSubmitView.setOnResultEndListener(listener);
     }
 
 
@@ -132,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mSubmitView.setProgress(50);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
@@ -145,21 +164,45 @@ public class LoginActivity extends AppCompatActivity {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
+            mSubmitView.doResult(false);
+            new Handler().postDelayed(new Runnable() {
+                public void run(){
+                    mSubmitView.reset();
+                }
+            },2000);
         }
         if(TextUtils.isEmpty(password)){
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
+            mSubmitView.doResult(false);
+            new Handler().postDelayed(new Runnable() {
+                public void run(){
+                    mSubmitView.reset();
+                }
+            },2000);
         }
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
+            mSubmitView.doResult(false);
+            new Handler().postDelayed(new Runnable() {
+                public void run(){
+                    mSubmitView.reset();
+                }
+            },2000);
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
+            mSubmitView.doResult(false);
+            new Handler().postDelayed(new Runnable() {
+                public void run(){
+                    mSubmitView.reset();
+                }
+            },2000);
         }
 
         if (cancel) {
@@ -243,10 +286,22 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();
+                        mSubmitView.doResult(false);
+                        new Handler().postDelayed(new Runnable() {
+                            public void run(){
+                                mSubmitView.reset();
+                            }
+                        },2000);
                     }
                 }
                 else {
                     Toast.makeText(LoginActivity.this,"Access Fail",Toast.LENGTH_LONG).show();
+                    mSubmitView.doResult(false);
+                    new Handler().postDelayed(new Runnable() {
+                        public void run(){
+                            mSubmitView.reset();
+                        }
+                    },2000);
                 }
             }
             @Override
