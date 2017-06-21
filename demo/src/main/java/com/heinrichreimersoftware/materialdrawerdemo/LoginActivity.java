@@ -42,6 +42,8 @@ import java.io.InputStreamReader;
 import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.json.JSONObject;
 import java.net.URLEncoder;
 import java.net.HttpURLConnection;
@@ -53,7 +55,7 @@ import com.loopj.android.http.*;
 import cz.msebera.android.httpclient.*;
 import cz.msebera.android.httpclient.cookie.Cookie;
 import com.unstoppable.submitbuttonview.SubmitButton;
-
+import android.os.Handler;
 /**
  * A login screen that offers login via email/password.
  */
@@ -126,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
          * @param boolean isSucceed
          */
 
+        //Submit Button https://github.com/Someonewow/SubmitButton
         mSubmitView = (SubmitButton)findViewById(R.id.submitbutton);
         mSubmitView.reset();
         mSubmitView.setOnClickListener(new OnClickListener() {
@@ -186,12 +189,23 @@ public class LoginActivity extends AppCompatActivity {
             focusView = mPasswordView;
             cancel = true;
             mSubmitView.doResult(false);
+            new Handler().postDelayed(new Runnable(){
+                public void run(){
+                    mSubmitView.reset();
+                }
+            }, 2000);
         }
         if(TextUtils.isEmpty(password)){
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
             mSubmitView.doResult(false);
+            new Handler().postDelayed(new Runnable(){
+                public void run(){
+                    mSubmitView.reset();
+                }
+            }, 2000);
+
         }
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
@@ -199,13 +213,22 @@ public class LoginActivity extends AppCompatActivity {
             focusView = mEmailView;
             cancel = true;
             mSubmitView.doResult(false);
+            new Handler().postDelayed(new Runnable(){
+                public void run(){
+                    mSubmitView.reset();
+                }
+            }, 2000);
 
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
             mSubmitView.doResult(false);
-
+            new Handler().postDelayed(new Runnable(){
+                public void run(){
+                    mSubmitView.reset();
+                }
+            }, 2000);
         }
 
         if (cancel) {
@@ -286,11 +309,32 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                         Intent myIntent = new Intent(LoginActivity.this,NavigationActivity.class);
                         LoginActivity.this.startActivity(myIntent);
-                        mSubmitView.doResult(true);
+
+
+//                        int progress = 0;
+//                        Timer timer = new Timer();
+//                        timer.schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                mSubmitView.doResult(true);
+//                            }
+//                        }, 0, 1000);
+
+//                        new Handler().postDelayed(new Runnable(){
+//                            public void run(){
+//                                mSubmitView.doResult(true);
+//                            }
+//                        }, 3000);
+
                     } else {
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();
                         mSubmitView.doResult(false);
+                        new Handler().postDelayed(new Runnable(){
+                            public void run(){
+                                mSubmitView.reset();
+                            }
+                        }, 3000);
                     }
                 }
                 else {
