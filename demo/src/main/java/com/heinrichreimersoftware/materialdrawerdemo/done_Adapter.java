@@ -2,12 +2,14 @@ package com.heinrichreimersoftware.materialdrawerdemo;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.heinrichreimersoftware.materialdrawerdemo.item.done_progress;
 import com.heinrichreimersoftware.materialdrawerdemo.RoundedRectProgressBar;
@@ -26,8 +28,10 @@ public class done_Adapter extends RecyclerView.Adapter<done_Adapter.ViewHolder> 
     private static final int UNSELECTED = -1;
     private RecyclerView recyclerView;
     private int selectedItem = UNSELECTED;
-
+    public ArrayList<Integer> completing_array;
+    public ArrayList<Integer> counting_array;
     private Activity activity;
+
     List<done_progress> items = Collections.emptyList();
 
         /*public class ViewHolder extends RecyclerView.ViewHolder {
@@ -42,12 +46,15 @@ public class done_Adapter extends RecyclerView.Adapter<done_Adapter.ViewHolder> 
         }*/
 
     //public MyAdapter(List<String> headdata, List<String> datedata, RecyclerView recyclerView) {
-    public done_Adapter(Activity activity, List<done_progress> items, RecyclerView recyclerView) {
+    public done_Adapter(Activity activity, List<done_progress> items, RecyclerView recyclerView,
+                        ArrayList<Integer> completing_array, ArrayList<Integer> counting_array) {
         //mHeadData = headdata;
         //mDateData = datedata;
         this.activity = activity;
         this.items = items;
         this.recyclerView = recyclerView;
+        this.completing_array = completing_array;
+        this.counting_array = counting_array;
     }
 
     @Override
@@ -60,7 +67,7 @@ public class done_Adapter extends RecyclerView.Adapter<done_Adapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.expandButton1.setText(items.get(position).getCourse_head());
-        holder.bind(position);
+        holder.bind(position,holder.itemView);
         //holder.mHeadView.setText(mHeadData.get(position));
         //holder.mDataView.setText(mDateData.get(position));
 
@@ -94,19 +101,21 @@ public class done_Adapter extends RecyclerView.Adapter<done_Adapter.ViewHolder> 
         private int progress;
         private Timer timer;
 
-        private void reset(){
+        public void reset(){
             progress = 0;
+
             timer = new Timer();
             timer.schedule(new TimerTask() {
+
                 @Override
                 public void run(){
                     bar.setProgress(progress);
                     progress++;
-                    if(progress > 100){
+                    if(progress > (completing_array.get(position)-counting_array.get(position))*100/completing_array.get(position)){
                         timer.cancel();
                     }
                 }
-            },0 ,30);
+            },0 ,20);
         }
 
         public ViewHolder(View v) {
@@ -118,16 +127,13 @@ public class done_Adapter extends RecyclerView.Adapter<done_Adapter.ViewHolder> 
             expandableLayout.setInterpolator(new OvershootInterpolator());
             expandButton1 = (TextView) v.findViewById(R.id.html_head_head);
             expandButton2 = (TextView) v.findViewById(R.id.html_content);
-            hw_content = (TextView) v.findViewById(R.id.description) ;
-
-            bar = (RoundedRectProgressBar) v.findViewById(R.id.bar);
-            btn = (Button) v.findViewById(R.id.btn_progress);
-            btn.setOnClickListener(new View.OnClickListener(){
+            hw_content = (TextView) v.findViewById(R.id.description);
+            /*btn.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
                     reset();
                 }
-            });
+            });*/
 
             expandButton1.setOnClickListener(this);
             expandButton2.setOnClickListener(this);
@@ -135,7 +141,7 @@ public class done_Adapter extends RecyclerView.Adapter<done_Adapter.ViewHolder> 
 
         }
 
-        public void bind(int position) {
+        public void bind(int position,View view) {
             this.position = position;
             //expandButton.setText("TESTING");
             //expandButton1.setText("TESTING");
@@ -143,6 +149,20 @@ public class done_Adapter extends RecyclerView.Adapter<done_Adapter.ViewHolder> 
             expandButton1.setSelected(false);
             expandButton2.setSelected(false);
             expandableLayout.collapse(false);
+            progress = 0;
+            final int finish = (completing_array.get(position)-counting_array.get(position))*100/completing_array.get(position);
+            bar = (RoundedRectProgressBar) view.findViewById(R.id.bar);
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run(){
+                    bar.setProgress(progress);
+                    progress++;
+                    if(progress > finish){
+                        timer.cancel();
+                    }
+                }
+            },0 ,20);
         }
 
         @Override
@@ -161,6 +181,9 @@ public class done_Adapter extends RecyclerView.Adapter<done_Adapter.ViewHolder> 
                 expandButton2.setSelected(true);
                 expandableLayout.expand();
                 selectedItem = position;
+                int finish = (completing_array.get(position)-counting_array.get(position))*100/completing_array.get(position);
+                Toast.makeText(activity,finish+"", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity,position+"", Toast.LENGTH_SHORT).show();
             }
         }
     }
