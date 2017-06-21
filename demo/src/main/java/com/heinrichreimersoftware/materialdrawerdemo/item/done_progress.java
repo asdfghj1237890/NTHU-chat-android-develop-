@@ -20,6 +20,7 @@ public class done_progress {
     public String getCourse_head() {
         return course_head;
     }
+    public String getDescription() {return description;}
 
     public void setCourse_head(String course_head) {
         this.course_head = course_head;

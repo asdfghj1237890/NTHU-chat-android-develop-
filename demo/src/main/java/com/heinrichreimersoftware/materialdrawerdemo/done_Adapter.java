@@ -67,6 +67,7 @@ public class done_Adapter extends RecyclerView.Adapter<done_Adapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.expandButton1.setText(items.get(position).getCourse_head());
+        holder.hw_content.setText(items.get(position).getDescription());
         holder.bind(position,holder.itemView);
         //holder.mHeadView.setText(mHeadData.get(position));
         //holder.mDataView.setText(mDateData.get(position));

@@ -41,6 +41,7 @@ public class doneam extends Fragment {
     private MyDBHelper databaseHelper;
     private ArrayList<done_progress> arrayList_new = new ArrayList<done_progress>();
     private ArrayList<String> course_list = new ArrayList<String>();
+    private ArrayList<String> hw_list = new ArrayList<String>();
     private Cursor cursor;
     private done_Adapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -76,6 +77,10 @@ public class doneam extends Fragment {
     public void loadDatabase(View v)
     {
         arrayList_new.clear();
+        hw_list.clear();
+        course_list.clear();
+        completing_array.clear();
+        counting_array.clear();
         SimpleDateFormat system_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         RecyclerView mList = (RecyclerView) v.findViewById(R.id.list_view);
         databaseHelper = new MyDBHelper(getActivity());
@@ -99,10 +104,12 @@ public class doneam extends Fragment {
                 if(cursor.moveToFirst()) {
                     String course_title = cursor.getString(1);
                     String Date_hw = cursor.getString(5);
+                    String hw_name = cursor.getString(3);
                     if(!course_list.contains(course_title)) {
                         try {
                             Date parsed_date = system_date.parse(Date_hw);
                             course_list.add(course_title);
+                            hw_list.add("⏏"+hw_name);
                             completing_array.add(1);
                             if (parsed_date.compareTo(now) == 1)
                                 counting_array.add(1);
@@ -116,7 +123,9 @@ public class doneam extends Fragment {
                     while (cursor.isLast() != true) {
                         if (!course_list.contains(cursor.getString(1))) {
                             Date_hw = cursor.getString(5);
+                            hw_name = cursor.getString(3);
                             course_list.add(cursor.getString(1));
+                            hw_list.add("⏏"+cursor.getString(3));
                             int qq0 = course_list.indexOf(cursor.getString(1));
                             Log.d("index", qq0+"");
                             try{
@@ -136,11 +145,13 @@ public class doneam extends Fragment {
                         }
                         else{
                             Date_hw = cursor.getString(5);
+                            hw_name = "⏏"+cursor.getString(3);
                             int qq1 = course_list.indexOf(cursor.getString(1));
                             Log.d("index", qq1+"");
                             Log.d("temp", completing_array.size()+"");
                             Log.d("temp1", counting_array.size()+"");
                             int temp = completing_array.get(qq1);
+                            String hw_temp = hw_list.get(qq1);
                             int temp1;
                             try {
                                 temp1 = counting_array.get(qq1);
@@ -149,6 +160,7 @@ public class doneam extends Fragment {
                                 counting_array.add(0);
                             }
                             completing_array.set(course_list.indexOf(cursor.getString(1)),temp+1);
+                            hw_list.set(course_list.indexOf(cursor.getString(1)),hw_temp+"\n"+hw_name);
                             try {
                                 Date parsed_date = system_date.parse(Date_hw);
                                 if (parsed_date.compareTo(now) == 1)
@@ -162,7 +174,8 @@ public class doneam extends Fragment {
                     for(int i=0; i < course_list.size(); i++){
                         done_progress done = new done_progress();
                         done.setCourse_head(course_list.get(i).toString());
-                        //done.setDescription();
+                        done.setDescription(hw_list.get(i).toString());
+                        //Toast.makeText(getActivity(),hw_list.get(i).toString(), Toast.LENGTH_SHORT).show();
                         arrayList_new.add(done);
                     }
                 }
