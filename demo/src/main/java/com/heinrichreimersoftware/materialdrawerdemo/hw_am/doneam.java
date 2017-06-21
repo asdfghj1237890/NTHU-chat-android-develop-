@@ -38,6 +38,7 @@ public class doneam extends Fragment {
     private RecyclerView mList;
     private MyDBHelper databaseHelper;
     private ArrayList<done_progress> arrayList_new = new ArrayList<done_progress>();
+    private ArrayList<String> course_list = new ArrayList<String>();
     private Cursor cursor;
     private done_Adapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -94,26 +95,19 @@ public class doneam extends Fragment {
                 }*/
                 if(cursor.moveToFirst()) {
                     String course_title = cursor.getString(1);
+                    if(!course_list.contains(course_title))
+                        course_list.add(course_title);
                     while (cursor.isLast() != true) {
-                        if (course_title.equals(cursor.getString(1)) == false) {
-                            Log.d("title", course_title);
-                            Log.d("getString", cursor.getString(1));
-                            Log.d("id", cursor.getPosition()+"");
-                            if(cursor.getPosition() <= 0){
-                                cursor.moveToNext();
-                            }
-                            else {
-                                cursor.moveToPrevious();
-                                Log.d("id", cursor.getPosition() + "");
-                                done_progress done = new done_progress();
-                                done.setCourse_head(cursor.getString(1));
-                                course_title = cursor.getString(1);
-                                arrayList_new.add(done);
-                                cursor.moveToNext();
-                                cursor.moveToNext();
-                            }
+                        if (!course_list.contains(cursor.getString(1))) {
+                            course_list.add(cursor.getString(1));
+                            cursor.moveToNext();
                         }
                         else{cursor.moveToNext();}
+                    }
+                    for(int i=0; i < course_list.size(); i++){
+                        done_progress done = new done_progress();
+                        done.setCourse_head(course_list.get(i).toString());
+                        arrayList_new.add(done);
                     }
                 }
                 //adapter.refreshItem(databaseHelper.getAllHW());
