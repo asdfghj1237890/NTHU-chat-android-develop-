@@ -10,7 +10,7 @@
     android:layout_marginLeft="9dp"
     android:layout_marginRight="9dp"
     android:layout_marginBottom="8dp"
-    app:cardCornerRadius="5dp"
+    app:cardCornerRadius="3dp"
     app:cardBackgroundColor="#FFFFFF"
     app:cardElevation="5dp"
     app:cardMaxElevation="5dp"
@@ -34,16 +34,20 @@
             android:id="@+id/html_head_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="5dp"
             android:text="Loading Header"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="@color/color_login"/>
 
         <com.heinrichreimersoftware.materialdrawerdemo.RoundedRectProgressBar
             android:id="@+id/bar"
-            android:layout_width="308dp"
+            android:layout_width="match_parent"
             android:layout_height="24dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:layout_marginTop="0dp"
             app:backColor="#E6E6E6"
             app:barColor="#33CC99"
@@ -59,8 +63,11 @@
             android:id="@+id/html_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:padding="5dp"
+            android:textSize="14sp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="15dp"
             android:text="按此顯示已完成作業" />
 
         <net.cachapa.expandablelayout.ExpandableLayout
@@ -76,7 +83,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                android:padding="16dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 android:text="Content測試"
                 android:textColor="@android:color/black"
                 android:textSize="15sp" />
