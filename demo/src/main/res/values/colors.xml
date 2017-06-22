@@ -16,4 +16,7 @@
     <color name="view_background">#4F5051</color>
     <color name="background">#455a64</color>
     <color name="white">#FFFFFF</color>
+    
+    <color name="black">#000000</color>
+    <color name="grey">#C0C0C0</color>
 </resources>
