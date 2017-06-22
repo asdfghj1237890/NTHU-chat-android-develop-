@@ -23,7 +23,9 @@ import android.widget.Toast;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
-import com.facebook.stetho.Stetho;
+//import com.facebook.stetho.Stetho;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ilmsplus.demo.item.Item;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -61,13 +63,17 @@ public class NavigationActivity extends AppCompatActivity
     private MyAdapter adapter;
     private RecyclerView recyclerView;
     private String url = "http://lms.nthu.edu.tw/home.php";
+    public FirebaseAuth mAuth;
+    public FirebaseUser mUser;
     final public ArrayList<String> course_name_list = new ArrayList();
     private FinalAsyncHttpClient finalAsyncHttpClient = new FinalAsyncHttpClient();
     private AsyncHttpClient client = finalAsyncHttpClient.getAsyncHttpClient();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Stetho.initializeWithDefaults(this);
+        //Stetho.initializeWithDefaults(this);
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
         helper = new MyDBHelper(NavigationActivity.this);
         recyclerView =(RecyclerView) findViewById(R.id.list_view);
         setContentView(R.layout.activity_navigation);
@@ -120,7 +126,8 @@ public class NavigationActivity extends AppCompatActivity
         sub2.add(0,404,0,"登出");
         MenuItem logoutItem = sub2.findItem(404);
         logoutItem.setIcon(R.drawable.ic_power_settings_new_black_24dp_1x);
-
+        if(mUser != null)
+            Toast.makeText(this, "你好，"+mUser.getDisplayName(), Toast.LENGTH_SHORT).show();
         //displaySelectedScreen(R.id.nav_assignment);
         displaySelectedScreen(999);
     }
@@ -170,6 +177,13 @@ public class NavigationActivity extends AppCompatActivity
         } else if (id == 404) {
             CookieUtils.clearCookie(NavigationActivity.this);
             Toast.makeText(NavigationActivity.this, "Signing out" , Toast.LENGTH_SHORT).show();
+            try {
+                FirebaseUser currentuser = mAuth.getCurrentUser();
+                Toast.makeText(NavigationActivity.this, "再見，"+currentuser.getDisplayName() , Toast.LENGTH_SHORT).show();
+                mAuth.getInstance().signOut();
+            }catch (Exception e){
+                Log.d(TAG,"Firebase Logout Failed");
+            }
             finish();
             Intent myIntent = new Intent(NavigationActivity.this,LoginActivity.class);
             NavigationActivity.this.startActivity(myIntent);

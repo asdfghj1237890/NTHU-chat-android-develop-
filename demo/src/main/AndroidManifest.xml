@@ -29,7 +29,8 @@
         <activity
             android:name="com.ilmsplus.demo.NavigationActivity"
             android:label="@string/title_activity_navigation"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme">
+        </activity>
     </application>
 
     <service

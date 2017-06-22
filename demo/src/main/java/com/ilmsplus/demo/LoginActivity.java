@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
@@ -22,11 +23,20 @@ import java.util.List;
 
 import android.widget.Toast;
 import android.graphics.Typeface;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.loopj.android.http.*;
 import cz.msebera.android.httpclient.*;
 import cz.msebera.android.httpclient.cookie.Cookie;
 import android.os.Handler;
 import com.unstoppable.submitbuttonview.SubmitButton;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * A login screen that offers login via email/password.
@@ -43,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
     private final String TAG = "LoginActivity";
     private SubmitButton mSubmitView;
     private SubmitButton.OnResultEndListener listener;
+
+    public FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +117,80 @@ public class LoginActivity extends AppCompatActivity {
         });
         mSubmitView.setVisibility(View.VISIBLE);
         mSubmitView.setOnResultEndListener(listener);
+
+        //Initial Firebase auth
+        mAuth = FirebaseAuth.getInstance();
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        //Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
+    }
+
+    private void createAccount(final String email, final String password) {
+        Log.d(TAG, "createAccount:" + email);
+
+        // [START create_user_with_email]
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>(){
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(LoginActivity.this, "Create AC Success",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            signIn(email, password);
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                    }
+                });
+        // [END create_user_with_email]
+    }
+
+
+    private void signIn(String email, String password) {
+        Log.d(TAG, "signIn:" + email);
+
+        // [START sign_in_with_email]
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(LoginActivity.this, "Login Firebase Success.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+                    }
+                });
+        // [END sign_in_with_email]
+    }
+
+    private void signOut() {
+        mAuth.signOut();
+        //updateUI(null);
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -248,12 +332,28 @@ public class LoginActivity extends AppCompatActivity {
                 if (result!=null){
                     //Toast.makeText(LoginActivity.this,result,Toast.LENGTH_LONG).show();
                     String test = result.substring(18,22);
+                    String fire_email = "";
+                    String fire_passwd = "";
                     if (test.equals("true")){
+                        try{
+                            JSONObject jsonObj = new JSONObject(result);
+                            fire_email = jsonObj.getJSONObject("ret").getString("email");
+                            fire_passwd = jsonObj.getJSONObject("ret").getString("name")+"_ilmschat";
+                            //Toast.makeText(LoginActivity.this,jsonObj.getString("ret"), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(LoginActivity.this,jsonObj.getJSONObject("ret").getString("email"), Toast.LENGTH_SHORT).show();
+                            //Log.d(TAG, jsonObj.getString("email"));
+                            //Log.d(TAG, jsonObj.getString("status"));
+                                createAccount(fire_email, fire_passwd);
+                        }catch (Exception e){
+                            Log.d(TAG,"Json login Firebase Fail");
+                        }
                         //Toast.makeText(LoginActivity.this, "Login Access, cookie=" + getCookieText(), Toast.LENGTH_SHORT).show();
                         CookieUtils.setCookies(CookieUtils.getCookie(LoginActivity.this));
-                        finish();
-                        Intent myIntent = new Intent(LoginActivity.this,NavigationActivity.class);
-                        LoginActivity.this.startActivity(myIntent);
+                        if(mAuth != null) {
+                            finish();
+                            Intent myIntent = new Intent(LoginActivity.this, NavigationActivity.class);
+                            LoginActivity.this.startActivity(myIntent);
+                        }
                     } else {
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();
