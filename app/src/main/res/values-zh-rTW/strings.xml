@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NTHU聊天室</string>
+    <string name="school">全校</string>
+    <string name="welcome_msg">歡迎</string>
+    <string name="sign_out">登出</string>
+    <string name="contacts_permission_rationale">需要登入才能獲取資料</string>
+    <string name="invite_menu_label">邀請</string>
+    <string name="invitation_message">請與我一起加入聊天室吧</string>
+    <string name="invitation_cta">立即行動吧</string>
+    <string name="invitation_title">聊天室邀請</string>
+    <string name="sign_in">登入</string>
+    <string name="sign_up">登記</string>
+    <string name="fresh_config">Fresh Config</string>
+    <string name="cause_crash">Cause Crash</string>
+    <string name="prompt_id">你的iLMS帳號</string>
+    <string name="prompt_password">你的iLMS密碼</string>
+    <string name="error_invalid_email">密碼格式不正確</string>
+    <string name="error_invalid_password">欄位空白</string>
+    <string name="error_incorrect_password">密碼不正確</string>
+    <string name="error_field_required">必填欄位</string>
+    <string name="introduction">NTHU聊天室是非官方的APP，並沒有附屬於，或者由NTHU所支持。\n如果你喜歡這個APP，請隨時在Github貢獻，或捐贈，以使這個APP會更好。</string>
+    <string name="change_name">更改顯示名稱</string>
+    <string name="change_name_intro">(最多20位)</string>
+    <string name="confirm">確認</string>
+    <string name="cancel">取消</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">設定</string>
+    <string name="channels">大型頻道</string>
+    <string name="div">系所</string>
+    <string name="courses">課程頻道</string>
+    <string name="emptymessage">你可以成為第一個發言的人!</string>
+</resources>

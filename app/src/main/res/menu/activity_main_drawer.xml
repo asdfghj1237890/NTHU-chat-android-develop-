@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="@string/channels" android:checkableBehavior="single" android:orderInCategory="1">
+        <menu>
+            <item
+                android:id="@+id/school"
+                android:icon="@drawable/ic_dashboard_black_18dp"
+                android:title="@string/school"
+                android:checkable="true"/>
+            <item
+                android:id="@+id/div"
+                android:icon="@drawable/ic_dashboard_black_18dp"
+                android:title="@string/div"
+                android:checkable="true"/>
+        </menu>
+    </item>
+
+    <group android:id = "@+id/course_menu" android:checkableBehavior="single"/>
+
+    <item android:title="@string/action_settings" android:orderInCategory="999">
+        <menu>
+            <item
+                android:id="@+id/change_name"
+                android:icon="@drawable/ic_autorenew_black_18dp"
+                android:title="@string/change_name" />
+            <item
+                android:id="@+id/sign_out_menu"
+                android:icon="@drawable/ic_eject_black_18dp"
+                android:title="@string/sign_out" />
+        </menu>
+    </item>
+
+</menu>
