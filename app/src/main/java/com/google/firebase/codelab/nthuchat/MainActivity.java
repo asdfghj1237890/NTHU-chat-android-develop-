@@ -1,5 +1,7 @@
 package com.google.firebase.codelab.nthuchat;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -23,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -87,12 +91,27 @@ public class MainActivity extends AppCompatActivity
         mEmailView = headerView.findViewById(R.id.emailView);
         mIconView =  headerView.findViewById(R.id.iconView);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         dbinstance = AppDatabase.getAppDatabase(getApplicationContext());
         user = dbinstance.userDao().getUser();
 
+        drawer =  findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if(slideOffset != 0){
+                    hideKeyboard(MainActivity.this);
+                }
+            }
+        };
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        //Toast.makeText(this, "[Main.create]currentUser: "+mFirebaseUser, Toast.LENGTH_SHORT).show();
         if (mFirebaseUser == null) {
             // Not signed in, launch the Sign In activity
             startActivity(new Intent(this, SignInActivity.class));
@@ -139,40 +158,6 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        /*fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
-        drawer =  findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        mFirebaseDB = FirebaseDatabase.getInstance();
-        //mFBdiv = mFirebaseDB.getReference("/users/"+mFirebaseAuth.getCurrentUser().getUid()+"/div");
-        /*mFBdiv.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                department = dataSnapshot.getValue().toString();
-                //Toast.makeText(MainActivity.this, department, Toast.LENGTH_SHORT).show();
-                navigationView.getMenu().findItem(R.id.div).setTitle(fire_div);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // ...
-            }
-        });*/
         if(user != null) {
             navigationView.getMenu().findItem(R.id.div).setTitle(user.getDiv());
             String coursename = user.getClasses();
@@ -183,6 +168,10 @@ public class MainActivity extends AppCompatActivity
                 sub1.add(0, 50+id,50+id, course_title[id]).setIcon(R.drawable.ic_assignment_black_18dp);
             }
 
+        }else{
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+            return;
         }
         navigationView.setNavigationItemSelectedListener(this);
         displaySelectedScreen(R.id.school);
@@ -218,10 +207,13 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.fresh_config_menu:
-                //fetchConfig();
+            case R.id.action_settings:
+                Uri uri = Uri.parse("https://www.facebook.com/nthuchat/");
+                Intent it = new Intent(Intent.ACTION_VIEW, uri);
+                startAnimatedActivity(it);
                 return true;
             default:
+                hideKeyboard(this);
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -235,13 +227,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch(id){
             case R.id.school:
-                //startAnimatedActivity(new Intent(this, Schoolchat.class));
-                //break;
                 displaySelectedScreen(R.id.school);
                 break;
             case R.id.div:
-                //startAnimatedActivity(new Intent(this, Department.class));
-                //break;
                 displaySelectedScreen(R.id.div);
                 break;
             case R.id.change_name:
@@ -313,9 +301,8 @@ public class MainActivity extends AppCompatActivity
             default:
                 displaySelectedScreen(id);
                 break;
-                //Toast.makeText(MainActivity.this, sub1.findItem(id).toString(), Toast.LENGTH_SHORT).show();
         }
-
+        hideKeyboard(this);
         drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -323,6 +310,7 @@ public class MainActivity extends AppCompatActivity
 
     protected void startAnimatedActivity(Intent intent) {
         startActivity(intent);
+        hideKeyboard(this);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
@@ -347,6 +335,7 @@ public class MainActivity extends AppCompatActivity
 
         //replacing the fragment
         if (fragment != null) {
+            hideKeyboard(this);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setCustomAnimations(R.anim.slide_in,R.anim.slide_out);
             ft.replace(R.id.content_frame, fragment);
@@ -355,6 +344,17 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override

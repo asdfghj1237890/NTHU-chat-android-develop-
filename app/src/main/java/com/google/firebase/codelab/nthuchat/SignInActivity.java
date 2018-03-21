@@ -15,6 +15,7 @@
  */
 package com.google.firebase.codelab.nthuchat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,7 +23,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -120,6 +123,8 @@ public class SignInActivity extends AppCompatActivity implements
         // Initialize FirebaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDB = FirebaseDatabase.getInstance();
+
+
     }
 
     @Override
@@ -128,6 +133,14 @@ public class SignInActivity extends AppCompatActivity implements
         //Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
         //Toast.makeText(SignInActivity.this, "[signin.start]currentUser: "+currentUser, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.
+                INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        return true;
     }
 
     /**
@@ -371,7 +384,7 @@ public class SignInActivity extends AppCompatActivity implements
             String[] title = elements.get(i).text().split("");
             //Log.d(TAG, title);
             for (int m = 0; m < title.length; m++) {
-                if (title[m].matches("[A-Za-z0-9() &]*")) {
+                if (title[m].matches("[A-Za-z0-9() &,-]*")) {
                     title[m] = "";
                 } else {
                     final_name += title[m];

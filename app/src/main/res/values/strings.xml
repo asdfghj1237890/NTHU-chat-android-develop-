@@ -12,7 +12,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="fresh_config">Fresh Config</string>
     <string name="cause_crash">Cause Crash</string>
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3589269405021012/6743491039</string>
     <string name="prompt_id">Your iLMS ID</string>
     <string name="prompt_password">Your iLMS Password</string>
     <string name="error_invalid_email">This account is invalid</string>
@@ -34,4 +34,5 @@
     <string name="courses">Courses</string>
     <string name="div">Department</string>
     <string name="emptymessage">You can be the first one to talk!</string>
+    <string name="facebook">Facebook</string>
 </resources>

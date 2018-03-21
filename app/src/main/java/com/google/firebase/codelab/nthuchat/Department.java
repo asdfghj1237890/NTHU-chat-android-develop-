@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,11 +47,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-
+import com.google.android.gms.ads.MobileAds;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,12 +65,18 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
         TextView messageTextView;
         TextView messengerTextView;
         CircleImageView messengerImageView;
+        View view;
 
         public MessageViewHolder(View v) {
             super(v);
             messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
             messengerTextView = (TextView) itemView.findViewById(R.id.messengerTextView);
             messengerImageView = (CircleImageView) itemView.findViewById(R.id.messengerImageView);
+            view = itemView;
+        }
+
+        public void setOnItemClick(View.OnClickListener l){
+            this.view.setOnClickListener(l);
         }
     }
 
@@ -102,6 +111,8 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FirebaseAnalytics mFirebaseAnalytics;
     private AdView mAdView;
+    private TextView countLabel;
+    private long countlength;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -109,6 +120,10 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
         //inflate your activity layout here!
         @SuppressLint("InflateParams")
         View contentView = inflater.inflate(R.layout.activity_schoolchat, container, false);
+
+        MobileAds.initialize(getActivity(), "ca-app-pub-3589269405021012~8631287778");
+
+        countLabel = contentView.findViewById(R.id.countLabel);
 
         dbinstance = AppDatabase.getAppDatabase(getContext());
         user = dbinstance.userDao().getUser();
@@ -177,6 +192,22 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
         };
 
         DatabaseReference messagesRef = mFirebaseDatabaseReference.child(MESSAGES_CHILD);
+        messagesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.hasChildren()) {
+                    //Toast.makeText(getActivity(), R.string.emptymessage, Toast.LENGTH_SHORT).show();
+                    FriendlyMessage friendlyMessage = new
+                            FriendlyMessage("你可以成為第一個發言的人喔!", "NTHU Chat", "https://nthuchat.com/images/user1.jpg", "999999");
+                    mFirebaseDatabaseReference.child(MESSAGES_CHILD)
+                            .push().setValue(friendlyMessage);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
         FirebaseRecyclerOptions<FriendlyMessage> options =
                 new FirebaseRecyclerOptions.Builder<FriendlyMessage>()
                         .setQuery(messagesRef, parser)
@@ -244,7 +275,15 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
                         }
                         break;
                 }
-
+                viewHolder.setOnItemClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //設定你點擊每個Item後，要做的事情
+                        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.
+                                INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                    }
+                });
             }
         };
 
@@ -280,9 +319,12 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.toString().trim().length() > 0) {
                     //Toast.makeText(MainActivity.this, "true", Toast.LENGTH_SHORT).show();
+                    int current_length = charSequence.toString().trim().length();
+                    countLabel.setText(current_length +"/"+ countlength);
                     mSendButton.setEnabled(true);
                 } else {
                     //Toast.makeText(MainActivity.this, "false", Toast.LENGTH_SHORT).show();
+                    countLabel.setText("0/"+ countlength);
                     mSendButton.setEnabled(false);
                 }
             }
@@ -377,6 +419,7 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
                 mFirebaseRemoteConfig.getLong("friendly_msg_length");
         mMessageEditText.setFilters(new InputFilter[]{new
                 InputFilter.LengthFilter(friendly_msg_length.intValue())});
+        countlength = friendly_msg_length;
         Log.d(TAG, "FML is: " + friendly_msg_length);
     }
 

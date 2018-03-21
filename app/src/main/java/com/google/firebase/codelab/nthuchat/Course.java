@@ -2,6 +2,7 @@ package com.google.firebase.codelab.nthuchat;
 
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,12 +63,18 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
         TextView messageTextView;
         TextView messengerTextView;
         CircleImageView messengerImageView;
+        View view;
 
         public MessageViewHolder(View v) {
             super(v);
             messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
             messengerTextView = (TextView) itemView.findViewById(R.id.messengerTextView);
             messengerImageView = (CircleImageView) itemView.findViewById(R.id.messengerImageView);
+            view = itemView;
+        }
+
+        public void setOnItemClick(View.OnClickListener l){
+            this.view.setOnClickListener(l);
         }
     }
 
@@ -110,6 +119,8 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FirebaseAnalytics mFirebaseAnalytics;
     private AdView mAdView;
+    private TextView countLabel;
+    private long countlength;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -117,6 +128,8 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
         //inflate your activity layout here!
         @SuppressLint("InflateParams")
         View contentView = inflater.inflate(R.layout.activity_schoolchat, container, false);
+        MobileAds.initialize(getActivity(), "ca-app-pub-3589269405021012~8631287778");
+        countLabel = contentView.findViewById(R.id.countLabel);
 
         dbinstance = AppDatabase.getAppDatabase(getContext());
         user = dbinstance.userDao().getUser();
@@ -186,7 +199,11 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (!snapshot.hasChildren()) {
-                    Toast.makeText(getActivity(), R.string.emptymessage, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), R.string.emptymessage, Toast.LENGTH_SHORT).show();
+                    FriendlyMessage friendlyMessage = new
+                            FriendlyMessage("你可以成為第一個發言的人喔!", "NTHU Chat", "https://nthuchat.com/images/user1.jpg", "999999");
+                    mFirebaseDatabaseReference.child(MESSAGES_CHILD)
+                            .push().setValue(friendlyMessage);
                 }
             }
 
@@ -261,7 +278,15 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
                         }
                         break;
                 }
-
+                viewHolder.setOnItemClick(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //設定你點擊每個Item後，要做的事情
+                        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.
+                                INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                    }
+                });
             }
         };
 
@@ -297,9 +322,12 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.toString().trim().length() > 0) {
                     //Toast.makeText(MainActivity.this, "true", Toast.LENGTH_SHORT).show();
+                    int current_length = charSequence.toString().trim().length();
+                    countLabel.setText(current_length +"/"+ countlength);
                     mSendButton.setEnabled(true);
                 } else {
                     //Toast.makeText(MainActivity.this, "false", Toast.LENGTH_SHORT).show();
+                    countLabel.setText("0/"+ countlength);
                     mSendButton.setEnabled(false);
                 }
             }
@@ -394,6 +422,7 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
                 mFirebaseRemoteConfig.getLong("friendly_msg_length");
         mMessageEditText.setFilters(new InputFilter[]{new
                 InputFilter.LengthFilter(friendly_msg_length.intValue())});
+        countlength = friendly_msg_length;
         Log.d(TAG, "FML is: " + friendly_msg_length);
     }
 

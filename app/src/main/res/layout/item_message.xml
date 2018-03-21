@@ -28,14 +28,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:text="Testing"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/messengerTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:text="testuser"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="12sp" />
         </LinearLayout>
 
     </LinearLayout>

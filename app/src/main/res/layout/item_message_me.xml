@@ -21,17 +21,23 @@
                 android:id="@+id/messageTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_weight="0"
+                android:gravity="end"
+                android:text="Testing"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_gravity="right"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/messengerTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_weight="0"
+                android:gravity="end"
+                android:text="TestUser"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_gravity="right"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <de.hdodenhof.circleimageview.CircleImageView

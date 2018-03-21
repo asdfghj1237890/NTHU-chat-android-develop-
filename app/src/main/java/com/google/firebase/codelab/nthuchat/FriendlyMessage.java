@@ -46,7 +46,12 @@ public class FriendlyMessage {
     }
 
     public void setText(String text) {
-        this.text = text;
+        if (text.contains("\n")){
+            String tmp_text = text.replaceAll("\n"," ");
+            this.text = tmp_text.trim();
+        }else {
+            this.text = text.trim();
+        }
     }
 
     public String getName() {
@@ -75,7 +80,12 @@ public class FriendlyMessage {
     }
 
     public String getText() {
-        return text;
+        if (text.contains("\n")){
+            String tmp_text = text.replaceAll("\n"," ");
+            return tmp_text.trim();
+        }else {
+            return text.trim();
+        }
     }
 
     public void setPhotoUrl(String photoUrl) {
