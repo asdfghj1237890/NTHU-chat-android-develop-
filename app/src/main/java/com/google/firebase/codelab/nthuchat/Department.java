@@ -50,6 +50,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -86,6 +87,7 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
     public String mPhotoUrl;
     public String mUid;
     public User user;
+    public int departmentlimit;
 
     private static final String TAG = "Department";
 
@@ -116,12 +118,13 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        departmentlimit = 50;
         //getSupportFragmentManager().beginTransaction().remove(currentFragment).commit();
         //inflate your activity layout here!
         @SuppressLint("InflateParams")
         View contentView = inflater.inflate(R.layout.activity_schoolchat, container, false);
 
-        MobileAds.initialize(getActivity(), "ca-app-pub-3589269405021012~8631287778");
+        //MobileAds.initialize(getActivity(), "ca-app-pub-3589269405021012~8631287778");
 
         countLabel = contentView.findViewById(R.id.countLabel);
 
@@ -166,10 +169,6 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
                     });
         }
 
-        //mGoogleApiClient = new GoogleApiClient.Builder(this)
-        //        .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-        //        .addApi(Auth.GOOGLE_SIGN_IN_API)
-        //        .build();
 
         // Initialize ProgressBar and RecyclerView.
         mProgressBar = (ProgressBar) contentView.findViewById(R.id.progressBar);
@@ -192,6 +191,7 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
         };
 
         DatabaseReference messagesRef = mFirebaseDatabaseReference.child(MESSAGES_CHILD);
+        //Query query = messagesRef.limitToLast(departmentlimit);
         messagesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -199,8 +199,7 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
                     //Toast.makeText(getActivity(), R.string.emptymessage, Toast.LENGTH_SHORT).show();
                     FriendlyMessage friendlyMessage = new
                             FriendlyMessage("你可以成為第一個發言的人喔!", "NTHU Chat", "https://nthuchat.com/images/user1.jpg", "999999");
-                    mFirebaseDatabaseReference.child(MESSAGES_CHILD)
-                            .push().setValue(friendlyMessage);
+                    mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
                 }
             }
 
@@ -208,6 +207,7 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
         FirebaseRecyclerOptions<FriendlyMessage> options =
                 new FirebaseRecyclerOptions.Builder<FriendlyMessage>()
                         .setQuery(messagesRef, parser)
@@ -372,9 +372,9 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
-        mAdView = (AdView) contentView.findViewById(R.id.adView);
+        /*mAdView = (AdView) contentView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);*/
         return contentView;
     }
 
@@ -439,9 +439,9 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
 
     @Override
     public void onPause() {
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.pause();
-        }
+        }*/
         mFirebaseAdapter.stopListening();
         super.onPause();
     }
@@ -451,17 +451,17 @@ public class Department extends Fragment implements GoogleApiClient.OnConnection
     public void onResume() {
         super.onResume();
         mFirebaseAdapter.startListening();
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.resume();
-        }
+        }*/
     }
 
     /** Called before the activity is destroyed */
     @Override
     public void onDestroy() {
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.destroy();
-        }
+        }*/
         super.onDestroy();
     }
 

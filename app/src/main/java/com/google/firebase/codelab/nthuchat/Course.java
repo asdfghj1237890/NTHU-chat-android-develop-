@@ -128,7 +128,7 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
         //inflate your activity layout here!
         @SuppressLint("InflateParams")
         View contentView = inflater.inflate(R.layout.activity_schoolchat, container, false);
-        MobileAds.initialize(getActivity(), "ca-app-pub-3589269405021012~8631287778");
+        //MobileAds.initialize(getActivity(), "ca-app-pub-3589269405021012~8631287778");
         countLabel = contentView.findViewById(R.id.countLabel);
 
         dbinstance = AppDatabase.getAppDatabase(getContext());
@@ -168,11 +168,6 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
                         }
                     });
         }
-
-        //mGoogleApiClient = new GoogleApiClient.Builder(this)
-        //        .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-        //        .addApi(Auth.GOOGLE_SIGN_IN_API)
-        //        .build();
 
         // Initialize ProgressBar and RecyclerView.
         mProgressBar = (ProgressBar) contentView.findViewById(R.id.progressBar);
@@ -375,9 +370,9 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
-        mAdView = (AdView) contentView.findViewById(R.id.adView);
+        /*mAdView = (AdView) contentView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);*/
         return contentView;
     }
 
@@ -442,9 +437,9 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
 
     @Override
     public void onPause() {
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.pause();
-        }
+        }*/
         mFirebaseAdapter.stopListening();
         super.onPause();
     }
@@ -454,17 +449,17 @@ public class Course extends Fragment implements GoogleApiClient.OnConnectionFail
     public void onResume() {
         super.onResume();
         mFirebaseAdapter.startListening();
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.resume();
-        }
+        }*/
     }
 
     /** Called before the activity is destroyed */
     @Override
     public void onDestroy() {
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.destroy();
-        }
+        }*/
         super.onDestroy();
     }
 

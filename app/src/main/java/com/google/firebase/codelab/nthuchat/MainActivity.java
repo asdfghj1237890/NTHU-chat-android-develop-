@@ -162,12 +162,14 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().findItem(R.id.div).setTitle(user.getDiv());
             String coursename = user.getClasses();
             String[] course_title = coursename.split("#");
-            sub1 = navigationView.getMenu().addSubMenu(R.id.course_menu,49,49,R.string.courses);
-            for(int id =0; id <= course_title.length-1; id++) {
-                //Toast.makeText(MainActivity.this, course_title[id], Toast.LENGTH_SHORT).show();
-                sub1.add(0, 50+id,50+id, course_title[id]).setIcon(R.drawable.ic_assignment_black_18dp);
+            //Toast.makeText(this, "course.length: "+course_title.length, Toast.LENGTH_SHORT).show();
+            if (course_title.length > 1 ) {
+                sub1 = navigationView.getMenu().addSubMenu(R.id.course_menu, 49, 49, R.string.courses);
+                for (int id = 0; id <= course_title.length - 1; id++) {
+                    //Toast.makeText(MainActivity.this, course_title[id], Toast.LENGTH_SHORT).show();
+                    sub1.add(0, 50 + id, 50 + id, course_title[id]).setIcon(R.drawable.ic_assignment_black_18dp);
+                }
             }
-
         }else{
             startActivity(new Intent(this, SignInActivity.class));
             finish();

@@ -120,7 +120,7 @@ public class Schoolchat extends Fragment implements GoogleApiClient.OnConnection
         @SuppressLint("InflateParams")
         View contentView = inflater.inflate(R.layout.activity_schoolchat, container, false);
 
-        MobileAds.initialize(getActivity(), "ca-app-pub-3589269405021012~8631287778");
+        //MobileAds.initialize(getActivity(), "ca-app-pub-3589269405021012~8631287778");
 
         countLabel = contentView.findViewById(R.id.countLabel);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -157,11 +157,6 @@ public class Schoolchat extends Fragment implements GoogleApiClient.OnConnection
                         }
                     });
         }
-
-        //mGoogleApiClient = new GoogleApiClient.Builder(this)
-        //        .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-        //        .addApi(Auth.GOOGLE_SIGN_IN_API)
-        //        .build();
 
         // Initialize ProgressBar and RecyclerView.
         mProgressBar = (ProgressBar) contentView.findViewById(R.id.progressBar);
@@ -348,9 +343,9 @@ public class Schoolchat extends Fragment implements GoogleApiClient.OnConnection
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
-        mAdView = (AdView) contentView.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        //mAdView = (AdView) contentView.findViewById(R.id.adView);
+        //AdRequest adRequest = new AdRequest.Builder().build();
+        //mAdView.loadAd(adRequest);
         return contentView;
     }
 
@@ -415,9 +410,9 @@ public class Schoolchat extends Fragment implements GoogleApiClient.OnConnection
 
     @Override
     public void onPause() {
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.pause();
-        }
+        }*/
         mFirebaseAdapter.stopListening();
         super.onPause();
     }
@@ -427,17 +422,17 @@ public class Schoolchat extends Fragment implements GoogleApiClient.OnConnection
     public void onResume() {
         super.onResume();
         mFirebaseAdapter.startListening();
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.resume();
-        }
+        }*/
     }
 
     /** Called before the activity is destroyed */
     @Override
     public void onDestroy() {
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.destroy();
-        }
+        }*/
         super.onDestroy();
     }
 
